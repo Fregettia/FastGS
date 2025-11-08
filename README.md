@@ -4,7 +4,7 @@
 
 **Training 3D Gaussian Splatting in 100 Seconds**
 
-[🌐 Homepage](链接1) | [📄 Paper](链接2)
+[🌐 Homepage](https://fastgs.github.io/) | [📄 Paper](https://arxiv.org/abs/2511.04283)
 
 </div>
 
