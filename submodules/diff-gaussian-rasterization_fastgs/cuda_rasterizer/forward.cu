@@ -237,7 +237,7 @@ __global__ void preprocessCUDA(
 	float mid = 0.5f * (cov.x + cov.z);
 	float lambda1 = mid + sqrt(max(0.1f, mid * mid - det));
 	float lambda2 = mid - sqrt(max(0.1f, mid * mid - det));
-	float my_radius = ceil(3.f * sqrt(max(lambda1, lambda2)));
+	int my_radius = max(ceil(3.f * sqrt(max(lambda1, lambda2))), 1.f);
 	float2 point_image = { ndc2Pix(p_proj.x, W), ndc2Pix(p_proj.y, H) };
 
 	float4 con_o = { conic.x, conic.y, conic.z, opacities[idx] };
@@ -430,7 +430,7 @@ renderCUDA(
 	// max reduce the last contributor
     typedef cub::BlockReduce<uint32_t, BLOCK_X, cub::BLOCK_REDUCE_WARP_REDUCTIONS, BLOCK_Y> BlockReduce;
     __shared__ typename BlockReduce::TempStorage temp_storage;
-    last_contributor = BlockReduce(temp_storage).Reduce(last_contributor, cub::Max());
+    last_contributor = BlockReduce(temp_storage).Reduce(last_contributor, cuda::maximum<>());
 	if (block.thread_rank() == 0) {
 		max_contrib[tile_id] = last_contributor;
 	}
